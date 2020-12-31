@@ -1,3 +1,4 @@
+import 'package:converter_currency/pages/home/binding/home_binding.dart';
 import 'package:converter_currency/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,13 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: myThemeLight,
-      home: HomePage(),
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => HomePage(),
+          binding: HomeBinding(),
+        ),
+      ],
     );
   }
 }

@@ -26,6 +26,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   find_dropdown:
   get:
+  currency_input_formatters: ^0.0.2
   
 
 dev_dependencies:
