@@ -18,6 +18,7 @@ class HomePage extends GetView<HomeController> {
           ),
         ),
         Scaffold(
+          resizeToAvoidBottomPadding: false,
           appBar: AppBar(
             title: Text('Conversor de Moedas'),
           ),
@@ -60,59 +61,90 @@ class HomePage extends GetView<HomeController> {
                       child: Center(
                         child: Column(
                           children: [
-                            Obx(
-                              () => Form(
-                                key: controller.formKey,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: controller.coinController,
-                                  decoration: InputDecoration(
-                                    suffixIcon: Icon(Icons.calculate),
-                                    labelText: 'Valor em real',
-                                    hintText: 'Valor em real',
-                                    border: OutlineInputBorder(),
+                            Form(
+                              key: controller.formKey,
+                              child: Column(
+                                children: [
+                                  Obx(() => TextFormField(
+                                        keyboardType: TextInputType.number,
+                                        controller: controller.coinController,
+                                        decoration: InputDecoration(
+                                          suffixIcon:
+                                              Icon(Icons.monetization_on),
+                                          labelText: 'Valor em real',
+                                          hintText: 'Valor em real',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return 'Digite um valor';
+                                          }
+                                          if (value.length < 3)
+                                            return 'Valor muito curto';
+                                          if (value.length > 30)
+                                            return 'valor muito longo';
+                                          return null;
+                                        },
+                                        inputFormatters: [
+                                          controller.currencyFormatter
+                                        ],
+                                      )),
+                                  SizedBox(
+                                    height: 12,
                                   ),
-                                  validator: (value) {
-                                    if (value.length < 3)
-                                      return 'Valor muito curto';
-                                    if (value.length > 30)
-                                      return 'valor muito longo';
-                                    return null;
-                                  },
-                                  inputFormatters: [
-                                    controller.currencyFormatter
-                                  ],
-                                ),
+                                  FindDropdown(
+                                    constraints: BoxConstraints(maxHeight: 200),
+                                    showSearchBox: false,
+                                    items: [
+                                      'Dolar',
+                                      'Peso Argentino',
+                                      'Euro',
+                                      'Iene',
+                                    ],
+                                    label: 'Escolha a moeda para converção:',
+                                    onChanged: (String item) =>
+                                        controller.setItem = item,
+                                    selectedItem: 'Escolha uma moeda',
+                                    validate: (selectedText) {
+                                      if (selectedText == 'Escolha uma moeda') {
+                                        return 'Escolha uma moeda valida';
+                                      }
+                                      if (selectedText == null) {
+                                        return 'Escolha uma moeda valida';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 300,
+                                    child: FlatButton.icon(
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        controller.converterCurrency(
+                                            controller.getItem);
+                                      },
+                                      icon: Icon(Icons.calculate),
+                                      label: Text('Toque para converter'),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  Obx(() => TextFormField(
+                                        enabled: false,
+                                        controller: controller.infoController,
+                                        decoration: InputDecoration(
+                                          labelText: 'Resultado da converção:',
+                                          hintText: 'Resultado da converção:',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        inputFormatters: [
+                                          controller.currencyFormatter
+                                        ],
+                                      ))
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            FindDropdown(
-                              constraints: BoxConstraints(maxHeight: 200),
-                              showSearchBox: false,
-                              items: [
-                                'Dolar',
-                                'Peso Argentino',
-                                'Euro',
-                                'Iene',
-                              ],
-                              label: 'Escolha a moeda para converção:',
-                              onChanged: (String item) => print(item),
-                              selectedItem: 'Escolha uma moeda',
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            Container(
-                              width: 200,
-                              height: 50,
-                              color: Colors.green,
-                              child: Text(
-                                'Resultado da converção: 0.000',
-                                softWrap: true,
-                              ),
-                            )
                           ],
                         ),
                       ),
